@@ -22,8 +22,8 @@ export function DashboardNav({ items }: DashboardNavProps) {
     }
 
     return (
-        <nav className="flex flex-col justify-between h-full gap-2">
-            <div>
+        <nav className="flex h-full flex-col justify-between gap-4">
+            <div className="space-y-1 rounded-xl border bg-card/70 p-2 shadow-sm">
                 {items.map((item, index) => {
                     const Icon = Icons[item.icon || "arrowRight"]
                     return (
@@ -31,8 +31,8 @@ export function DashboardNav({ items }: DashboardNavProps) {
                             <Link key={index} href={item.disabled ? "/" : item.href}>
                                 <span
                                     className={cn(
-                                        "group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
-                                        path === item.href ? "bg-accent" : "transparent",
+                                        "group flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground",
+                                        path === item.href ? "bg-accent text-foreground" : "text-muted-foreground",
                                         item.disabled && "cursor-not-allowed opacity-80"
                                     )}
                                 >
@@ -45,7 +45,7 @@ export function DashboardNav({ items }: DashboardNavProps) {
                 })}
             </div>
             <Card>
-                <CardHeader>
+                <CardHeader className="pb-3">
                     <CardTitle className="text-sm">Upgrade your plan</CardTitle>
                     <CardDescription className="text-xs">
                         Unlock more features by upgrading your plan and get premium support.

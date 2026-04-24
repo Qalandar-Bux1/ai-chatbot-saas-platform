@@ -9,6 +9,7 @@ import { getCurrentUser } from "@/lib/session";
 import { redirect } from "next/navigation";
 import GithubLoginForm from "@/components/github-login-form";
 import GoogleLoginForm from "@/components/google-login-form";
+import DevLoginForm from "@/components/dev-login-form";
 
 export const metadata: Metadata = {
   title: "Login",
@@ -17,6 +18,11 @@ export const metadata: Metadata = {
 
 export default async function Login() {
   const user = await getCurrentUser()
+  const githubEnabled = Boolean(process.env.GITHUB_ID && process.env.GITHUB_SECRET)
+  const googleEnabled = Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET)
+  const devLoginEnabled =
+    process.env.NODE_ENV !== "production" &&
+    process.env.DEV_LOGIN_ENABLED !== "false"
 
   if (user) {
     redirect("/dashboard")
@@ -46,8 +52,9 @@ export default async function Login() {
             Use your Google or Github account to sign in.
           </p>
           <div className="py-4">
-            <GithubLoginForm />
-            <GoogleLoginForm />
+            <DevLoginForm enabled={devLoginEnabled} />
+            <GithubLoginForm enabled={githubEnabled} />
+            <GoogleLoginForm enabled={googleEnabled} />
           </div>
           <p className="text-sm text-muted-foreground">
             By connecting your account, you agree to our <a href="/docs/legal/terms">Terms of Service</a> and <a href="/docs/legal/privacy">Privacy Policy</a>.

@@ -10,10 +10,10 @@ export function DashboardHeader({
     children,
 }: DashboardHeaderProps) {
     return (
-        <div className="flex items-center justify-between px-2">
+        <div className="flex flex-col gap-4 rounded-xl border bg-card/70 p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
             <div className="grid gap-1">
-                <h1 className="font-heading text-3xl md:text-4xl">{heading}</h1>
-                {text && <p className="text-lg text-muted-foreground">{text}</p>}
+                <h1 className="font-heading text-2xl md:text-3xl">{heading}</h1>
+                {text && <p className="text-sm text-muted-foreground md:text-base">{text}</p>}
             </div>
             {children}
         </div>

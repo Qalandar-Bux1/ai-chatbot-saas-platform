@@ -20,24 +20,24 @@ export function MainNav({ items, children }: MainNavProps) {
   const [showMobileMenu, setShowMobileMenu] = React.useState<boolean>(false)
 
   return (
-    <div className="flex gap-6 md:gap-10">
-      <Link href="/" className="hidden items-center space-x-2 md:flex">
-        <Icons.bot />
-        <span className="hidden font-bold sm:inline-block">
+    <div className="flex items-center gap-6 md:gap-10">
+      <Link href="/" className="hidden items-center space-x-2 rounded-full border bg-card px-3 py-1.5 shadow-sm md:flex">
+        <Icons.bot className="h-4 w-4" />
+        <span className="hidden text-sm font-semibold sm:inline-block">
           {siteConfig.name}
         </span>
       </Link>
       {items?.length ? (
-        <nav className="hidden gap-6 md:flex">
+        <nav className="hidden gap-2 md:flex">
           {items?.map((item, index) => (
             <Link
               key={index}
               href={item.disabled ? "#" : item.href}
               className={cn(
-                "flex items-center text-lg font-medium transition-colors hover:text-foreground/80 sm:text-sm",
+                "flex items-center rounded-full px-3 py-1.5 text-sm font-medium transition-colors hover:bg-accent hover:text-foreground/90",
                 item.href.startsWith(`/${segment}`)
-                  ? "text-foreground"
-                  : "text-foreground/60",
+                  ? "bg-accent text-foreground"
+                  : "text-foreground/70",
                 item.disabled && "cursor-not-allowed opacity-80"
               )}
             >

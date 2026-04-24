@@ -149,13 +149,13 @@ export default async function DashboardPage() {
       </DashboardHeader>
       <div>
         {bots === 0 &&
-          <div className="mb-4 bg-blue-100 border-l-4 border-blue-500 text-black p-4" role="info">
-            <p className="font-bold text-md">Welcome to {siteConfig.name} 🎉</p>
+          <div className="mb-4 rounded-xl border border-blue-300/70 bg-blue-50 p-4 text-blue-950 shadow-sm dark:border-blue-800 dark:bg-blue-950/30 dark:text-blue-100" role="info">
+            <p className="text-md font-bold">Welcome to {siteConfig.name} 🎉</p>
             <p className="text-sm">You are probably new to this platform.</p>
             <p className="text-sm">We recommend starting with our <a className="underline" href="/dashboard/onboarding">onboarding</a> for a step-by-step guide on how to create your first chatbot.</p>
             <p className="text-sm">If you prefer you can also start with our <a target="_blank" className="underline" href="/guides/how-to-build-smart-chatbot-for-your-webiste">tutorial</a>.</p>
             <br />
-            <a href="/dashboard/onboarding"><Button><p className="pr-2">Open Onboarding</p>  <Icons.help className="h-4 w-4" /> ‍</Button></a>
+            <a href="/dashboard/onboarding"><Button><p className="pr-2">Open Onboarding</p>  <Icons.help className="h-4 w-4" /></Button></a>
           </div>
         }
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

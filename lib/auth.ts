@@ -2,9 +2,70 @@ import { type NextAuthOptions } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
 
 import { db } from "@/lib/db"
 import { sendWelcomeEmail } from "./emails/send-welcome";
+
+const providers: NextAuthOptions["providers"] = [];
+const devLoginEnabled =
+  process.env.NODE_ENV !== "production" &&
+  process.env.DEV_LOGIN_ENABLED !== "false";
+
+if (process.env.GITHUB_ID && process.env.GITHUB_SECRET) {
+  providers.push(
+    GithubProvider({
+      clientId: process.env.GITHUB_ID as string,
+      clientSecret: process.env.GITHUB_SECRET as string,
+      allowDangerousEmailAccountLinking: true,
+    })
+  );
+}
+
+if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+  providers.push(
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      allowDangerousEmailAccountLinking: true,
+    })
+  );
+}
+
+if (devLoginEnabled) {
+  providers.push(
+    CredentialsProvider({
+      id: "dev-login",
+      name: "Dev Login",
+      credentials: {},
+      async authorize() {
+        const email = process.env.DEV_LOGIN_EMAIL || "dev@local.test";
+        const name = process.env.DEV_LOGIN_NAME || "Local Dev User";
+
+        let user = await db.user.findUnique({
+          where: { email },
+        });
+
+        if (!user) {
+          user = await db.user.create({
+            data: {
+              email,
+              name,
+              emailVerified: new Date(),
+            },
+          });
+        }
+
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          image: user.image,
+        };
+      },
+    })
+  );
+}
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db as any),
@@ -15,18 +76,7 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/login",
   },
-  providers: [
-    GithubProvider({
-      clientId: process.env.GITHUB_ID as string,
-      clientSecret: process.env.GITHUB_SECRET as string,
-      allowDangerousEmailAccountLinking: true,
-    }),
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-      allowDangerousEmailAccountLinking: true,
-    })
-  ],
+  providers,
   callbacks: {
     async session({ token, session }) {
       if (token) {

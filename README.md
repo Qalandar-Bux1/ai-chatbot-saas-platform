@@ -1,4 +1,4 @@
-﻿# SmartBot AI
+# SmartBot AI
 
 SmartBot AI is a SaaS platform for building production-ready AI chatbots
 that your customers can embed on any website. It ships with multi-user
@@ -35,6 +35,26 @@ npm run dev
 ```
 
 The dashboard is served at `http://localhost:3000/dashboard`.
+
+## Screenshots
+
+### Landing & Dashboard
+
+![Landing Page](./assets/landing%20page.png)
+![Dashboard](./assets/Dashboard.png)
+
+### Core Features
+
+![Chatbot](./assets/chatbot.png)
+![Messages](./assets/messages.png)
+![Crawler](./assets/crawler.png)
+![Create Crawler](./assets/create%20crwler.png)
+![Features](./assets/featurs.png)
+
+### Billing & Settings
+
+![Billing](./assets/billing.png)
+![Settings](./assets/settings.png)
 
 ## Knowledge Base & RAG
 

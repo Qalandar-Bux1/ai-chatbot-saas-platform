@@ -11,6 +11,7 @@ export const metadata = {
 }
 
 export default async function SupportPage() {
+    const demoChatbotId = process.env.NEXT_PUBLIC_DEMO_CHATBOT_ID;
 
     return (
         <DashboardShell>
@@ -36,11 +37,17 @@ export default async function SupportPage() {
                     If you still have issue with our app you can open a <a className="underline" href={siteConfig.links.github + '/issues'}>Github issue</a>, so we can help you to fix it and it will help us to improve our app.
                 </p>
                 <div className="min-w-[85%] min-h-[15rem] text-left items-left pt-6">
-                    <iframe
-                        src="/embed/clq6m06gc000114hm42s838g2/window?chatbox=false"
-                        className="overflow-hidden border border-1 rounded-lg shadow-lg w-full h-[65vh]"
-                        allowFullScreen allow="clipboard-read; clipboard-write"
-                    ></iframe>
+                    {demoChatbotId ? (
+                        <iframe
+                            src={`/embed/${demoChatbotId}/window?chatbox=false`}
+                            className="overflow-hidden border border-1 rounded-lg shadow-lg w-full h-[65vh]"
+                            allowFullScreen allow="clipboard-read; clipboard-write"
+                        ></iframe>
+                    ) : (
+                        <div className="rounded-lg border border-dashed p-6 text-center text-muted-foreground">
+                            Set <code>NEXT_PUBLIC_DEMO_CHATBOT_ID</code> in your <code>.env</code> to preview the demo chatbot.
+                        </div>
+                    )}
                 </div>
             </div>
         </DashboardShell >

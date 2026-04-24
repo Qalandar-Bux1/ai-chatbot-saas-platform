@@ -1,4 +1,4 @@
-﻿import { GithubCard } from "@/components/github-card";
+import { GithubCard } from "@/components/github-card";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -11,6 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 
 export default function IndexPage() {
+  const demoChatbotId = process.env.NEXT_PUBLIC_DEMO_CHATBOT_ID;
 
   return (
     <>
@@ -55,11 +56,17 @@ export default function IndexPage() {
             Ask any question about SmartBot AI to our chatbot powered by OpenAI Assistant API and see how it responds. You can also try the chatbot buttom right of the window.
           </p>
           <div className="min-w-[85%] min-h-[15rem] text-left items-left pt-6">
-            <iframe
-              src="/embed/clq6m06gc000114hm42s838g2/window?chatbox=false&defaultMessage=How%20many%20chatbot%20can%20I%20create%20for%20free?"
-              className="overflow-hidden border border-1 rounded-lg shadow-lg w-full h-[65vh]"
-              allowFullScreen allow="clipboard-read; clipboard-write"
-            ></iframe>
+            {demoChatbotId ? (
+              <iframe
+                src={`/embed/${demoChatbotId}/window?chatbox=false&defaultMessage=How%20many%20chatbot%20can%20I%20create%20for%20free?`}
+                className="overflow-hidden border border-1 rounded-lg shadow-lg w-full h-[65vh]"
+                allowFullScreen allow="clipboard-read; clipboard-write"
+              ></iframe>
+            ) : (
+              <div className="rounded-lg border border-dashed p-6 text-center text-muted-foreground">
+                Set <code>NEXT_PUBLIC_DEMO_CHATBOT_ID</code> in your <code>.env</code> to preview the demo chatbot here.
+              </div>
+            )}
           </div>
         </div>
       </section>

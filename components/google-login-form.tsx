@@ -6,7 +6,11 @@ import { useSearchParams } from "next/navigation"
 import LoadingDots from "@/components/loading-dots";
 import { Icons } from "./icons";
 
-export default function GoogleLoginForm() {
+interface GoogleLoginFormProps {
+  enabled?: boolean;
+}
+
+export default function GoogleLoginForm({ enabled = true }: GoogleLoginFormProps) {
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams()
 
@@ -14,18 +18,24 @@ export default function GoogleLoginForm() {
     <form
       onSubmit={async (e) => {
         e.preventDefault();
+        if (!enabled) return;
         setLoading(true);
-        await signIn("google", {
-          redirect: false,
-          callbackUrl: searchParams?.get("from") || "/welcome",
-        })
+        try {
+          await signIn("google", {
+            callbackUrl: searchParams?.get("from") || "/welcome",
+          });
+        } finally {
+          setLoading(false);
+        }
       }}
       className="flex flex-col space-y-4 px-4 sm:px-16"
     >
       <button
-        disabled={loading}
+        disabled={loading || !enabled}
         className={`${loading
           ? "cursor-not-allowed border-gray-200 bg-gray-100"
+          : !enabled
+            ? "cursor-not-allowed border-gray-200 bg-gray-100 text-gray-400"
           : "border-black bg-black text-black bg-white hover:text-white hover:bg-black"
           } flex h-10 w-full items-center justify-center rounded-md border text-sm transition-all focus:outline-none`}
       >
@@ -38,6 +48,11 @@ export default function GoogleLoginForm() {
           </div>
         )}
       </button>
+      {!enabled ? (
+        <p className="text-xs text-muted-foreground text-left">
+          Google sign in is disabled. Set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` in `.env`.
+        </p>
+      ) : null}
     </form>
   );
 }

@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 
 
 export default function Chatbot() {
+    const demoChatbotId = process.env.NEXT_PUBLIC_DEMO_CHATBOT_ID;
 
     const customStyle = {
         marginRight: '1rem',
@@ -23,16 +24,15 @@ export default function Chatbot() {
     };
 
     useEffect(() => {
-        window.addEventListener('message', function (event) {
+        function onMessage(event: MessageEvent) {
             var iframe = document.getElementById('smartbot-ai-chatbot-iframe');
             var buttonIframe = document.getElementById('smartbot-ai-chatbot-button-iframe');
 
             if (event.data === 'openChat') {
-                console.log('Toggle chat visibility');
                 if (iframe && buttonIframe) {
                     // send openChat to iframe
-                    iframe.contentWindow.postMessage('openChat', '*');
-                    buttonIframe.contentWindow.postMessage('openChat', '*');
+                    iframe.contentWindow?.postMessage('openChat', '*');
+                    buttonIframe.contentWindow?.postMessage('openChat', '*');
                     iframe.style.pointerEvents = 'auto';
                     iframe.style.display = 'block';
                     // Check if the screen width is less than 640 pixels
@@ -67,30 +67,33 @@ export default function Chatbot() {
                     iframe.style.display = 'none';
                     iframe.style.pointerEvents = 'none';
                     // send openChat to iframe
-                    iframe.contentWindow.postMessage('closeChat', '*');
-                    buttonIframe.contentWindow.postMessage('closeChat', '*');
+                    iframe.contentWindow?.postMessage('closeChat', '*');
+                    buttonIframe.contentWindow?.postMessage('closeChat', '*');
                 }
             }
-        });
-    });
+        }
+
+        window.addEventListener('message', onMessage);
+        return () => window.removeEventListener('message', onMessage);
+    }, []);
 
 
     function Chatbox() {
         const params = useSearchParams()
 
-        if ((params.get('chatbox') || '').match('false')) {
+        if ((params.get('chatbox') || '').match('false') || !demoChatbotId) {
             return <></>
         } else {
             return (
                 <>
                     <iframe
-                        src={`/embed/clq6m06gc000114hm42s838g2/button?chatbox=false`}
+                        src={`/embed/${demoChatbotId}/button?chatbox=false`}
                         scrolling='no'
                         id="smartbot-ai-chatbot-button-iframe"
                         className="fixed bottom-0 right-0 mb-4 z-50 flex items-end inline-block mr-4 w-14 h-14 border border-gray-300 rounded-full shadow-md"
                     ></iframe>
                     <iframe
-                        src={`/embed/clq6m06gc000114hm42s838g2/window?chatbox=false&withExitX=true`}
+                        src={`/embed/${demoChatbotId}/window?chatbox=false&withExitX=true`}
                         style={customStyle}
                         allowFullScreen
                         className='z-50'
