@@ -1,6 +1,9 @@
 ﻿"use client"
 
-import { SmartBot AIChat } from 'openassistantgpt'
+// `OpenAssistantGPTChat` is the symbol exported by the `openassistantgpt`
+// npm package. We keep the original identifier name — only the product
+// brand changed, not the upstream library.
+import { OpenAssistantGPTChat as SmartBotChat } from 'openassistantgpt'
 import { Message } from 'openassistantgpt'
 import { useState } from 'react'
 import { SupportInquiry } from './inquiry-extension'
@@ -80,7 +83,7 @@ export function Chat({ chatbot, defaultMessage, className, withExitX = false, cl
   console.log(chatbot);
 
   return (
-    <SmartBot AIChat chatbot={{
+    <SmartBotChat chatbot={{
       ...chatbot,
       displayFooterText: chatbot.displayBranding,
       footerLink: 'https://smartbot-ai.com',
@@ -95,4 +98,5 @@ export function Chat({ chatbot, defaultMessage, className, withExitX = false, cl
     />
   )
 }
+
 
