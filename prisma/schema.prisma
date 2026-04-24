@@ -105,6 +105,7 @@ model Chatbot {
   ClientInquiries       ClientInquiries[]
   ChatbotErrors         ChatbotErrors[]
   ChatbotMessagesExport ChatbotMessagesExport[]
+  KnowledgeBaseDocument KnowledgeBaseDocument[]
 
   @@map(name: "chatbots")
 }
@@ -215,12 +216,13 @@ model User {
   image         String?
   createdAt     DateTime  @default(now()) @map(name: "created_at")
 
-  accounts     Account[]
-  sessions     Session[]
-  Chatbot      Chatbot[]
-  Crawler      Crawler[]
-  OpenAIConfig OpenAIConfig[]
-  File         File[]
+  accounts              Account[]
+  sessions              Session[]
+  Chatbot               Chatbot[]
+  Crawler               Crawler[]
+  OpenAIConfig          OpenAIConfig[]
+  File                  File[]
+  KnowledgeBaseDocument KnowledgeBaseDocument[]
 
   stripeCustomerId         String?   @unique @map(name: "stripe_customer_id")
   stripeSubscriptionId     String?   @unique @map(name: "stripe_subscription_id")
@@ -239,4 +241,54 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+/// A document ingested into the Knowledge Base.
+/// A document is the "source": either a PDF blob the user uploaded
+/// or a block of raw text / FAQs they pasted. Its chunks + embeddings
+/// live on KnowledgeBaseChunk.
+model KnowledgeBaseDocument {
+  id        String                    @id @default(cuid())
+  userId    String
+  chatbotId String?
+  name      String
+  source    KnowledgeBaseSource
+  blobUrl   String?
+  charCount Int                       @default(0)
+  createdAt DateTime                  @default(now()) @map(name: "created_at")
+
+  user    User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chatbot Chatbot?               @relation(fields: [chatbotId], references: [id], onDelete: Cascade)
+  chunks  KnowledgeBaseChunk[]
+
+  @@index([userId])
+  @@index([chatbotId])
+  @@map(name: "knowledge_base_documents")
+}
+
+/// A single retrievable chunk of a KnowledgeBaseDocument, along with
+/// its OpenAI embedding. Embedding is stored as a native Float[] so we
+/// don't require the pgvector extension. Cosine similarity is performed
+/// in application code at query time.
+model KnowledgeBaseChunk {
+  id         String   @id @default(cuid())
+  documentId String
+  userId     String
+  chatbotId  String?
+  chunkIndex Int
+  content    String   @db.Text
+  embedding  Float[]
+  createdAt  DateTime @default(now()) @map(name: "created_at")
+
+  document KnowledgeBaseDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([documentId])
+  @@index([userId])
+  @@index([chatbotId])
+  @@map(name: "knowledge_base_chunks")
+}
+
+enum KnowledgeBaseSource {
+  pdf
+  text
 }
