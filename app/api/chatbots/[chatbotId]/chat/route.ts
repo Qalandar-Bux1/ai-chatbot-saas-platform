@@ -10,6 +10,7 @@ import { fileTypesFullList } from "@/lib/validations/codeInterpreter";
 import { fileTypes as searchFile } from "@/lib/validations/fileSearch";
 import { File } from "buffer";
 import { getClientIP } from "@/lib/getIP";
+import { retrieveContext, buildContextPrompt } from "@/lib/rag";
 
 export const maxDuration = 300;
 
@@ -140,10 +141,33 @@ export async function POST(
                         }
                     }
 
-                    // Run the assistant on the thread
+                    // RAG: retrieve the top-k most relevant chunks from the
+                    // chatbot owner's knowledge base and inject them as
+                    // run-scoped instructions. Isolated per-user + per-chatbot.
+                    // Any failure here is swallowed so the original chat flow
+                    // is never broken by the Knowledge Base being offline.
+                    let ragInstructions = ""
+                    try {
+                        const chunks = await retrieveContext({
+                            userId: chatbot.userId,
+                            chatbotId: chatbot.id,
+                            query: data.message.toString(),
+                            k: 5,
+                            apiKey: chatbot.openaiKey,
+                        })
+                        ragInstructions = buildContextPrompt(chunks)
+                    } catch (ragErr) {
+                        console.error("[RAG] retrieval failed", ragErr)
+                    }
+
+                    const userInstructions = (data.clientSidePrompt || "").replace('+', '') || ""
+                    const instructions = [ragInstructions, userInstructions]
+                        .filter(Boolean)
+                        .join("\n\n")
+
                     const runStream = openai.beta.threads.runs.stream(threadId!, {
                         assistant_id: chatbot.openaiId,
-                        instructions: (data.clientSidePrompt || "").replace('+', '') || "",
+                        instructions,
                         max_completion_tokens: chatbot.maxCompletionTokens,
                         max_prompt_tokens: chatbot.maxPromptTokens,
                     });
