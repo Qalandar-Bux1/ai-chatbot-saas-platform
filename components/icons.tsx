@@ -42,12 +42,14 @@ import {
   RefreshCcw,
   Paperclip,
   Lock,
+  BookOpen,
 } from "lucide-react"
 
 export type Icon = LucideIcon
 
 export const Icons = {
-  lock: Lock, 
+  lock: Lock,
+  knowledgeBase: BookOpen,
   document: File,
   paperclip: Paperclip,
   reload: RefreshCcw,

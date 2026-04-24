@@ -30,6 +30,11 @@ export const dashboardConfig: DashboardConfig = {
             icon: "folder",
         },
         {
+            title: "Knowledge Base",
+            href: "/dashboard/knowledge-base",
+            icon: "knowledgeBase",
+        },
+        {
             title: "Exports",
             href: "/dashboard/exports",
             icon: "download",
