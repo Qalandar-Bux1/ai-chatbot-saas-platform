@@ -14,3 +14,5 @@ export type { StoredChunk } from "./similarity";
 export { extractPdf } from "./pdf";
 export type { ExtractedPdf } from "./pdf";
 export { retrieveContext, buildContextPrompt } from "./retrieve";
+export { ingestText } from "./ingest";
+export type { IngestOptions, IngestResult } from "./ingest";
