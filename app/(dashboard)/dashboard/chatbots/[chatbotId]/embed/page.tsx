@@ -57,11 +57,24 @@ export default async function EmbedOnSitePage({ params }: ChatbotSettingsProps) 
                 </Link>
             </DashboardHeader>
 
-            <Tabs className="w-full overflow-x-auto max-w-full" defaultValue="widget">
+            <Tabs className="w-full overflow-x-auto max-w-full" defaultValue="script">
                 <TabsList className="mb-10 grid w-full grid-cols-5 gap-4">
+                    <TabsTrigger value="script">One-line script</TabsTrigger>
                     <TabsTrigger value="widget">Widget</TabsTrigger>
                     <TabsTrigger value="window">Window</TabsTrigger>
                 </TabsList>
+                <TabsContent value="script">
+                    <div className="space-y-4">
+                        <p className="text-sm text-muted-foreground">
+                            Paste this single tag anywhere inside your site&apos;s <code>&lt;body&gt;</code>.
+                            The widget is unique to this chatbot and connects directly to your Knowledge Base.
+                        </p>
+                        <CodeBlock
+                            language="html"
+                            value={`<script src="${siteConfig.url}chatbot.js?botId=${params.chatbotId}" defer></script>`}>
+                        </CodeBlock>
+                    </div>
+                </TabsContent>
                 <TabsContent value="window">
                     <div className="space-y-4">
                         <CodeBlock
